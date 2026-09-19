@@ -26,7 +26,7 @@ func main() {
 }
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
-	if _, err := fmt.Fprintln(w, "Hello, World!"); err != nil {
+	if _, err := fmt.Fprintln(w, "Hello from Mondoo Engineer!"); err != nil {
 		log.Printf("failed to write response: %v", err)
 	}
 }
