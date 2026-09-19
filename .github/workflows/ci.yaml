@@ -33,3 +33,17 @@ jobs:
 
       - name: Run race detector
         run: go test -race ./...
+  
+  semgrep:
+    name: Semgrep
+    runs-on: ubuntu-latest
+
+    container:
+      image: semgrep/semgrep
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Run Semgrep
+        run: semgrep scan --config auto
