@@ -64,6 +64,14 @@ jobs:
             -o "dist/mondoo-engineer-${GOOS}-${GOARCH}${suffix}" \
             ./cmd/server
 
+          if [ "$GOOS" = "linux" ] && [ "$GOARCH" = "amd64" ]; then
+            CGO_ENABLED=0 go build \
+              -trimpath \
+              -ldflags="-s -w" \
+              -o "dist/mondoo-healthcheck-linux-amd64" \
+              ./cmd/healthcheck
+          fi
+
       - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
@@ -96,7 +104,7 @@ jobs:
             dist/* \
             --title "${GITHUB_REF_NAME}" \
             --generate-notes
-      
+
       - name: Trigger deployment repository
         env:
           GH_TOKEN: ${{ secrets.DEPLOYMENT_REPO_TOKEN }}
