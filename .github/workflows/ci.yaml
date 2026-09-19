@@ -39,7 +39,7 @@ jobs:
 
       - name: Run govulncheck
         run: govulncheck ./...
-  
+
   semgrep:
     name: Semgrep
     runs-on: ubuntu-latest
@@ -53,7 +53,7 @@ jobs:
 
       - name: Run Semgrep
         run: semgrep scan --config auto
-  
+
   lint:
     name: Go lint
     runs-on: ubuntu-latest
@@ -75,7 +75,7 @@ jobs:
         uses: golangci/golangci-lint-action@v7
         with:
           version: v2.13.2
-  
+
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -98,11 +98,23 @@ jobs:
           go-version-file: go.mod
           cache: true
 
-      - name: Build
+      - name: Build binaries
         run: |
           mkdir -p dist
-          go build \
+
+          GOOS=linux GOARCH=amd64 go build \
             -trimpath \
             -ldflags="-s -w" \
-            -o dist/mondoo-engineer \
+            -o dist/mondoo-engineer-linux-amd64 \
             ./cmd/server
+
+          GOOS=linux GOARCH=amd64 go build \
+            -trimpath \
+            -ldflags="-s -w" \
+            -o dist/mondoo-healthcheck-linux-amd64 \
+            ./cmd/healthcheck
+
+      - name: Verify binaries
+        run: |
+          file dist/mondoo-engineer-linux-amd64
+          file dist/mondoo-healthcheck-linux-amd64
