@@ -96,3 +96,20 @@ jobs:
             dist/* \
             --title "${GITHUB_REF_NAME}" \
             --generate-notes
+      
+      - name: Trigger deployment repository
+        env:
+          GH_TOKEN: ${{ secrets.DEPLOYMENT_REPO_TOKEN }}
+          DEPLOYMENT_REPO: ${{ github.repository_owner }}/mondoo-engineer-deployment
+        run: |
+          gh api \
+            --method POST \
+            "/repos/${DEPLOYMENT_REPO}/dispatches" \
+            --input - <<EOF
+          {
+            "event_type": "application-release",
+            "client_payload": {
+              "version": "${GITHUB_REF_NAME}"
+            }
+          }
+          EOF
